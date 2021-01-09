@@ -1,0 +1,23 @@
+[package]
+name = "nats-latency-test-rs"
+version = "0.1.0"
+description = "NATS Latency and Throughput Test Framework in RUST - Ported from https://github.com/nats-io/latency-tests"
+authors = ["Thomas Saabye <ts@saabye.io>"]
+edition = "2018"
+license = "MIT"
+repository = "https://github.com/saabye-io/nats-latency-test.rs"
+readme = "README.md"
+keywords = ["nats", "client", "messaging", "latency-test"]
+categories = ["network-programming", "command-line-utilities"]
+
+[[bin]]
+name = "latency-rs"
+path = "src/main.rs"
+
+[dependencies]
+nats = "0.8"
+libm = "0.2.1"
+structopt = "0.3"
+hdrhistogram = "7.2.0"
+env_logger = "0.8"
+parse_duration = "2.1"

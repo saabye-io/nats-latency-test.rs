@@ -1,0 +1,8 @@
+version: '3.1'
+services:
+  nats:
+    image: nats:2.1.9-linux
+    command: -m 8222
+    ports:
+     - "4222:4222"
+     - "8222:8222"
