@@ -4,6 +4,83 @@ This is a port of https://github.com/nats-io/latency-tests written in RUST. All 
 
 This porting was done to verify was I was seeing using NATS, namely that the Nats-rust client was not at fast as the Nats-go client. 
 
+
+## Update - 2021-02-08
+
+After nats.rs was updated to version 0.9.3 it can compete with the GO lib as the ~40ms timeouts is gone.
+
+See: https://github.com/nats-io/nats.rs/issues/85 and https://github.com/nats-io/nats.rs/pull/141
+
+```
+$ ./latency-rs --tr 100 --tt 1s --sz 1024
+==============================
+Pub Server RTT : 160 µs
+Sub Server RTT : 112 µs
+Message Payload: 1.0K
+Target Duration: 1s
+Target Msgs/Sec: 100
+Target Band/Sec: 1.6Mbps
+==============================
+HDR Percentile
+10:       120.127µs
+50:       136.319µs
+75:       151.167µs
+90:       173.183µs
+99:       264.447µs
+99.9:     334.591µs
+99.99:    334.591µs
+99.999:   334.591µs
+99.9999:  334.591µs
+99.99999: 334.591µs
+100:      334.591µs
+==============================
+Actual Msgs/Sec: 98
+Actual Band/Sec: 1.5Mbps
+Minimum Latency: 116.439µs
+Median Latency : 136.571µs
+Maximum Latency: 334.478µs
+1st Sent Wall Time : 893.560965ms
+Last Sent Wall Time: 1.011699727s
+Last Recv Wall Time: 1.011700839s
+
+```
+
+And even with some bigger numbers it is looking good:
+
+```
+$ ./latency-rs --tr 10000 --tt 1s --sz 16184
+==============================
+Pub Server RTT : 127 µs
+Sub Server RTT : 136 µs
+Message Payload: 16K
+Target Duration: 1s
+Target Msgs/Sec: 10000
+Target Band/Sec: 2.4Gbps
+==============================
+HDR Percentile
+10:       108.095µs
+50:       198.399µs
+75:       254.847µs
+90:       307.711µs
+99:       534.015µs
+99.9:     756.735µs
+99.99:    858.111µs
+99.999:   942.079µs
+99.9999:  942.079µs
+99.99999: 942.079µs
+100:      942.079µs
+==============================
+Actual Msgs/Sec: 9981
+Actual Band/Sec: 2.4Gbps
+Minimum Latency: 81.012µs
+Median Latency : 198.377µs
+Maximum Latency: 941.766µs
+1st Sent Wall Time : 1.24520117s
+Last Sent Wall Time: 1.001848448s
+Last Recv Wall Time: 1.001849199s
+```
+
+
 ### Install
 ```
 $ git clone github.com/saabye-io/nats-latency-test.rs && cd nats-latency-test.rs 
@@ -108,9 +185,10 @@ Last Recv Wall Time: 5.006857s
 
 This is output from the previous example run. The test framework will establish a rough estimate of the RTT to each server via a call to ``nats.Flush()``. The message payload size, test duration and target msgs/sec and subsequent bandwidth will be noted. After the test completes the histogram percentiles for 10th, 50th, 75th, 90th, 99th,  99.99th, 99.999th, 99.9999th, 99.99999th, and 100th percentiles are printed.  After this, we print the actual results of achieved msgs/sec, bandwidth/sec, the minimum, median, and maximum latencies, and wall times recorded in the test run.  Note that the number of measurements (total messages) may cause overlap in the highest percential latency measurements, as demonstrated in the output above with 5000 measurements.
 
-## RUST NATS client vs GO Nats client
+## RUST NATS client (using nats v0.8.6) vs GO Nats client
 
 I ran these tests to get a feeling of the performance and it looks really good... For the GO NATS client. 
+
 
 Rust and go version is: 
 ```

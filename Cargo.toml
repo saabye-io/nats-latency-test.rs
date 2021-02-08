@@ -15,7 +15,7 @@ name = "latency-rs"
 path = "src/main.rs"
 
 [dependencies]
-nats = "0.8"
+nats = "0.9.3"
 libm = "0.2.1"
 structopt = "0.3"
 hdrhistogram = "7.2.0"
